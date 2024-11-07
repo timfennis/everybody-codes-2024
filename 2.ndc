@@ -1,0 +1,81 @@
+fn transpose(m) {
+  [[ row[i] for row in m] for i in 0..len(m[0])]
+}
+
+fn parse(content) {
+  let words, input = content.split("\n\n");
+  words = words.trim_start("WORDS:").split(",");
+  return words, input
+}
+
+let inputs = [
+  // parse(read_file("2-1.txt")),
+  // parse(read_file("2-2-ex.txt")),
+  // parse(read_file("2-2.txt"))
+];
+
+
+for words, input in inputs {
+  print("----------------------");
+  let p1, p2, p3 = 0, 0, 0;
+  for find_string in words {
+    p1 += input.words().filter(fn(word) { find_string in word }).len();
+  }
+
+  {
+    let glyphs = %{};
+      
+    let words_2 = words ++ words.map(reversed);
+    for i in 0..(input.len()) {
+      let substr = input[i..];
+      for find_string in words_2 {
+        if substr.starts_with(find_string) {
+          glyphs |= %{x for x in i..(i+find_string.len())};
+        }
+      }
+    }
+
+    p2 += glyphs.len();
+  }
+
+  {
+  }
+
+  
+  print(p1, p2);
+}
+
+let words, input = parse(read_file("2-3.txt"));
+let glyphs = %{};
+
+let words_2 = words ++ words.map(reversed);
+let linenr = 0;
+for line in input.lines() { 
+  for i in 0..line.len() {
+    let substr = line[i..] <> line[0..i];
+    for find_string in words_2 {
+      if substr.starts_with(find_string) {
+        let g = %{(linenr, x % line.len()) for x in i..(i+find_string.len())};
+        glyphs |= g;
+      }
+    }
+  }
+  linenr += 1;
+}
+linenr = 0;
+for line in input.lines().transpose() {
+  let line = line.reduce(fn(a,b) { a <> b });
+  for i in 0..line.len() {
+    let substr = line[i..];
+    for find_string in words_2 {
+      if substr.starts_with(find_string) {
+        let g = %{(x % line.len(), linenr) for x in i..(i+find_string.len())};
+        glyphs |= g;
+      }
+    }
+  }
+  linenr += 1;
+}
+
+print(glyphs.len());
+

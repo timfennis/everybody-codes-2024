@@ -1,0 +1,49 @@
+fn transposed(m) {
+  [[ row[i] for row in m] for i in 0..len(m[0])]
+}
+
+let data = read_file("5-3.txt").lines().map(nums);
+data = data.transposed();
+
+let clapper = 0;
+
+pure fn find_position(claps, col_len) {
+  let idx = 0;
+  let claps = claps;
+  let delta = 1;
+  while claps > 1 {
+    claps -= 1;
+    idx += delta;
+    if idx == col_len {
+      delta = -1;
+    }
+    if idx == 0 {
+      delta = 1;
+    }
+  }
+  idx
+}
+
+let best = -Inf;
+for roundnr in (1..) {
+  let cur = data[clapper].pop_left();
+
+  // Find the next clapper which is also the row we're placing cur
+  clapper = (clapper + 1) % data.len();
+
+  let col_len = data[clapper].len();
+
+  let new_idx = find_position(cur, col_len);
+
+  data[clapper].insert(new_idx, cur);
+
+  let num = int(data.map(first).reduce(fn(a, b) { a <> b }));
+  
+  if num > best {
+    print(num);
+  }
+
+  best max= num;
+}
+
+

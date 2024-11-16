@@ -1,0 +1,33 @@
+let input = read_file("6-1.txt");
+
+let m = %{};
+
+for line in input.lines() {
+  let from, to = line.split(":");
+  let to = to.split(",");
+  
+  m[from] = to;
+}
+
+fn enum(path) {
+  let cur = path.split(",").last();
+
+  let out = [];
+  if cur not in m {
+    return [path]; 
+  }
+
+  for dest in m[cur] {
+    if dest not in path {
+      out ++= enum(path <> "," <> dest);
+    }
+  }
+  out
+}
+
+let res = enum("RR");
+for r in res {
+  print(r);
+}
+
+

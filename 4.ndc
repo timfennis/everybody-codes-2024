@@ -1,0 +1,30 @@
+let p1 = read_file("4-1.txt").nums();
+let p2 = read_file("4-2.txt").nums();
+let p3 = read_file("4-3.txt").nums();
+
+fn calc(nails) {
+  let min = nails.min();
+
+  nails.map(fn(x) { x - min }).sum()
+}
+
+print(calc(p1));
+print(calc(p2));
+
+let ans = Inf;
+let avg = int(float(p3.sum()) / p3.len());
+
+let prev = ();
+for t in (avg..) {
+  let i = p3.map(fn(x) { abs(t - x) }).sum();
+  if prev != () and i > prev {
+    break;
+  }
+  ans min= i;
+  prev = i;
+}
+
+print(ans);
+
+
+
